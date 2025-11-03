@@ -1,17 +1,14 @@
 export default async function handler(req, res) {
   try {
-    // نجيب البيانات من ScoreBat لكن باستخدام وسيط عام لتجاوز القيود
-    const proxyUrl = "https://corsproxy.io/?";
-    const targetUrl = "https://www.scorebat.com/video-api/v3/feed/?token=MTY5ODlfMTcwNjMzNzE2Nl8xYTU0MzFjYmU0ZWRiM2Q1ZDRmMTFmYjhhYWE5Y2RmZjQxMTUyM2I5";
-
-    const response = await fetch(proxyUrl + encodeURIComponent(targetUrl));
+    const apiUrl = "https://www.scorebat.com/video-api/v3/feed/?token=MjUwNzM2XzE3NjIyMDMwOTZfZDZkM2JjNTRmNDkxMGNlNWVlOTAwNDgyMzk1OTM2Yjc5MmEyMmQ0MQ==";
+    const response = await fetch(apiUrl);
     const data = await response.json();
 
     if (!data || !data.response) {
-      return res.status(500).json({ error: "⚠️ لم يتم العثور على بيانات حالياً من المصدر." });
+      return res.status(500).json({ error: "⚠️ لم يتم العثور على بيانات من ScoreBat حالياً." });
     }
 
-    // فلترة اللقطات التي لا تحتوي على Dailymotion
+    // استبعاد فيديوهات Dailymotion
     const filtered = data.response
       .map(match => {
         const safeVideos = match.videos.filter(v => !v.embed.includes("dailymotion"));
